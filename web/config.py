@@ -15,7 +15,7 @@ class BaseConfig:
     SERVICE_BUS_CONNECTION_STRING ='phongvmbus.servicebus.windows.net' #TODO: Update value
     SERVICE_BUS_QUEUE_NAME ='notificationqueue'
     ADMIN_EMAIL_ADDRESS: 'phongvm@outlook.com'
-    SENDGRID_API_KEY = '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' #Configuration not required, required SendGrid Account
+    SENDGRID_API_KEY = '' #Configuration not required, required SendGrid Account
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
