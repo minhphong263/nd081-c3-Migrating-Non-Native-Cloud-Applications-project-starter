@@ -61,11 +61,34 @@ You will need to install the following locally:
 ## Monthly Cost Analysis
 Complete a month cost analysis of each Azure resource to give an estimate total cost using the table below:
 
-| Azure Resource | Service Tier | Monthly Cost |
-| ------------ | ------------ | ------------ |
-| *Azure Postgres Database* |     |              |
-| *Azure Service Bus*   |         |              |
-| ...                   |         |              |
+| Azure Resource            | Service Tier | Monthly Cost   | 
+| ------------              | ------------ | ------------   |
+| *Azure Postgres Database* | Standard_B1ms| USD 16.09      |
+| *Azure Service Bus*       | Basic        | 0.05USD/MILLION|
+| Azure Function App        | Y1           | Free           |
+| Azure Service App         | F1           | Free           |
 
 ## Architecture Explanation
 This is a placeholder section where you can provide an explanation and reasoning for your architecture selection for both the Azure Web App and Azure Function.
+
+# Azure Web App Architecture
+
+For the Azure Web App, we have chosen the following architecture to ensure cost-effectiveness:
+
+- App Service Plan: We have selected the F1 tier for our web app. This plan offers a cost-effective solution for low-traffic applications. Since our application is not expected to have high user load at peak, the F1 tier provides sufficient resources while keeping the costs low.
+
+By choosing the F1 tier, we can take advantage of the free tier benefits provided by Azure, which includes 60 minutes of CPU time per day and 1 GB of storage. This helps us minimize the cost while still meeting the requirements of our application.
+
+## Azure Function Architecture
+
+For the Azure Function, we have chosen the following architecture to ensure cost-effectiveness:
+
+- App Service Plan: We have selected the Consumption Plan for our Azure Function. This plan offers a cost-effective solution as we only pay for the actual execution time of the function.
+
+Since our function is triggered by messages in the service bus queue and is not expected to run continuously, the Consumption Plan allows us to scale automatically based on the incoming workload. This eliminates the need for provisioning and managing dedicated resources, resulting in cost savings.
+
+## Shared App Service Plan
+
+To further optimize costs, we have decided to share the same App Service Plan between the web app and the Azure Function. By doing so, we can reduce the cost associated with multiple service plans and efficiently utilize the available resources.
+
+By carefully selecting the appropriate App Service Plans for both the web app and the Azure Function, we have designed an architecture that meets our application's requirements while keeping the costs under control.
