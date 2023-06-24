@@ -2,9 +2,11 @@ from app import app, db, queue_client
 from datetime import datetime
 from app.models import Attendee, Conference, Notification
 from flask import render_template, session, request, redirect, url_for, flash, make_response, session
-from azure.servicebus import Message
+
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
+from azure.servicebus import ServiceBusClient, ServiceBusMessage
+
 import logging
 
 @app.route('/')
@@ -71,23 +73,26 @@ def notification():
             ## TODO: Refactor This logic into an Azure Function
             ## Code below will be replaced by a message queue
             #################################################
-            attendees = Attendee.query.all()
-
-            for attendee in attendees:
-                subject = '{}: {}'.format(attendee.first_name, notification.subject)
-                send_email(attendee.email, subject, notification.message)
-
-            notification.completed_date = datetime.utcnow()
-            notification.status = 'Notified {} attendees'.format(len(attendees))
-            db.session.commit()
+           
             # TODO Call servicebus queue_client to enqueue notification ID
+            
 
+            with queue_client:
+                # Create a sender for the queue
+                sender = queue_client.get_queue_sender(app.config.get('SERVICE_BUS_QUEUE_NAME'))
+
+                # Create a Service Bus message with the notification id
+                message = ServiceBusMessage(str(notification.id))
+
+                # Send the message to the queue
+                sender.send_messages(message)
             #################################################
             ## END of TODO
             #################################################
 
             return redirect('/Notifications')
-        except :
+        except (Exception) as error:
+            logging.error(error)
             logging.error('log unable to save notification')
 
     else:
